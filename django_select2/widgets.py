@@ -53,7 +53,7 @@ class Select2Mixin(object):
         'placeholder': '',  # Empty text label
         'allowClear': True,  # Not allowed when field is multiple since there each value has a clear button.
         'multiple': False,  # Not allowed when attached to <select>
-        'closeOnSelect': False,
+        # 'closeOnSelect': False,
     }
     """
     The options listed here are rendered as JS map and passed to Select2 JS code.
@@ -373,6 +373,11 @@ class HeavySelect2Mixin(Select2Mixin):
         selected_choices = list(force_unicode(v) for v in selected_choices)
         txts = []
         all_choices = choices if choices else []
+
+        # FIXME : I'm not sure where this gets set, but it slows everything!
+        # Unsetting!
+        self.choices = []
+
         for val, txt in chain(self.choices, all_choices):
             val = force_unicode(val)
             if val in selected_choices:
@@ -528,4 +533,26 @@ class AutoHeavySelect2Widget(AutoHeavySelect2Mixin, HeavySelect2Widget):
 
 class AutoHeavySelect2MultipleWidget(AutoHeavySelect2Mixin, HeavySelect2MultipleWidget):
     "Auto version of :py:class:`.HeavySelect2MultipleWidget`"
+    pass
+
+
+### Sortable widgets ###
+
+class SortableSelect2WidgetMixin(object):
+    """Add .sortable(...) to a Select2 widget."""
+    def render_inner_js_code(self, id_, *args, **kwargs):
+        js = super(SortableSelect2WidgetMixin, self).render_inner_js_code(id_, *args, **kwargs)
+        js += u'''\n$("#{0}").select2("container").find("ul.select2-choices").sortable({{
+                containment:    'parent',
+                start:          function() {{ $("#{0}").select2("onSortStart"); }},
+                update:         function() {{ $("#{0}").select2("onSortEnd"); }}
+            }});'''.format(id_)
+        return js
+
+
+#class SortableSelect2MultipleWidget(SortableSelect2WidgetMixin, Select2MultipleWidget):
+#    pass
+
+
+class SortableHeavySelect2MultipleWidget(SortableSelect2WidgetMixin, HeavySelect2MultipleWidget):
     pass
