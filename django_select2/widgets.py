@@ -276,6 +276,9 @@ class MultipleSelect2HiddenInput(forms.TextInput):
         return data.get(name, None)
 
 
+# Overriding the Select classes to HiddenInput ones
+#class Select2Widget(Select2Mixin, MultipleSelect2HiddenInput):
+#    pass
 ### Heavy mixins and widgets ###
 
 class HeavySelect2Mixin(Select2Mixin):

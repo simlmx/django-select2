@@ -7,7 +7,9 @@ if (!window['django_select2']) {
 		get_url_params: function (term, page, context) {
 			var field_id = $(this).data('field_id'),
 				res = {
-					'term': term,
+					//'term': term,
+                    // Adapted for my needs
+                    'q': term,
 					'page': page,
 					'context': context
 				};
