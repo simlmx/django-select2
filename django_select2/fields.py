@@ -587,6 +587,8 @@ class HeavyModelSelect2MultipleChoiceField(HeavySelect2FieldBaseMixin, ModelMult
     def __init__(self, *args, **kwargs):
         kwargs.pop('choices', None)
         super(HeavyModelSelect2MultipleChoiceField, self).__init__(*args, **kwargs)
+        # Maybe it's a hack...
+        self.widget.field = self
 
 
 ### Heavy general field that uses central AutoView ###
