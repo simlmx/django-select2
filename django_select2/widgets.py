@@ -222,23 +222,6 @@ class Select2Widget(Select2Mixin, forms.Select):
         return super(Select2Widget, self).render_options(choices, selected_choices)
 
 
-class Select2MultipleWidget(Select2Mixin, forms.SelectMultiple):
-    """
-    Drop-in Select2 replacement for :py:class:`forms.SelectMultiple`.
-
-    Following Select2 options from :py:attr:`.Select2Mixin.options` are removed:-
-
-        * multiple
-        * allowClear
-        * minimumResultsForSearch
-
-    """
-
-    def init_options(self):
-        self.options.pop('multiple', None)
-        self.options.pop('allowClear', None)
-        self.options.pop('minimumResultsForSearch', None)
-
 
 ### Specialized Multiple Hidden Input Widget ###
 class MultipleSelect2HiddenInput(forms.TextInput):
@@ -274,6 +257,26 @@ class MultipleSelect2HiddenInput(forms.TextInput):
         if isinstance(data, (MultiValueDict, MergeDict)):
             return data.getlist(name)
         return data.get(name, None)
+
+
+class Select2MultipleWidget(Select2Mixin, MultipleSelect2HiddenInput):
+    """
+    Drop-in Select2 replacement for :py:class:`forms.SelectMultiple`.
+
+    Following Select2 options from :py:attr:`.Select2Mixin.options` are removed:-
+
+        * multiple
+        * allowClear
+        * minimumResultsForSearch
+
+    """
+
+    def init_options(self):
+        self.options.pop('multiple', None)
+        self.options.pop('allowClear', None)
+        self.options.pop('minimumResultsForSearch', None)
+        self.options['separator'] = JSVar('django_select2.MULTISEPARATOR')
+
 
 
 # Overriding the Select classes to HiddenInput ones
@@ -539,7 +542,7 @@ class AutoHeavySelect2MultipleWidget(AutoHeavySelect2Mixin, HeavySelect2Multiple
     pass
 
 
-### Sortable widgets ###
+### Other widgets ###
 
 class SortableSelect2WidgetMixin(object):
     """Add .sortable(...) to a Select2 widget."""
@@ -559,3 +562,10 @@ class SortableSelect2WidgetMixin(object):
 
 class SortableHeavySelect2MultipleWidget(SortableSelect2WidgetMixin, HeavySelect2MultipleWidget):
     pass
+
+
+class TagsSelect2Widget(Select2MultipleWidget):
+    def init_options(self):
+        super(TagsSelect2Widget, self).init_options()
+        self.options['tags'] = JSVar('[]')
+

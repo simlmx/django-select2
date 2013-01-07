@@ -86,7 +86,9 @@ from django.utils.encoding import smart_unicode
 
 from .widgets import Select2Widget, Select2MultipleWidget,\
     HeavySelect2Widget, HeavySelect2MultipleWidget, AutoHeavySelect2Widget, \
-    AutoHeavySelect2MultipleWidget, AutoHeavySelect2Mixin
+    AutoHeavySelect2MultipleWidget, AutoHeavySelect2Mixin, \
+    TagsSelect2Widget
+
 from .views import NO_ERR_RESP
 from .util import extract_some_key_val
 
@@ -648,3 +650,12 @@ class AutoModelSelect2MultipleField(ModelResultJsonMixin, AutoViewFieldMixin, He
 
     widget = AutoHeavySelect2MultipleWidget
 
+
+# Other fields
+
+class TagsSelect2Field(Select2MultipleChoiceField):
+    widget = TagsSelect2Widget
+
+    def validate(self, value):
+        """Everything is good?"""
+        pass
