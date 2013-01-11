@@ -87,7 +87,7 @@ from django.utils.encoding import smart_unicode
 from .widgets import Select2Widget, Select2MultipleWidget,\
     HeavySelect2Widget, HeavySelect2MultipleWidget, AutoHeavySelect2Widget, \
     AutoHeavySelect2MultipleWidget, AutoHeavySelect2Mixin, \
-    TagsSelect2Widget
+    TagsSelect2Widget, SortableTagsSelect2Widget
 
 from .views import NO_ERR_RESP
 from .util import extract_some_key_val
@@ -659,3 +659,6 @@ class TagsSelect2Field(Select2MultipleChoiceField):
     def validate(self, value):
         """Everything is good?"""
         pass
+
+class SortableTagsSelect2Field(TagsSelect2Field):
+    widget = SortableTagsSelect2Widget
