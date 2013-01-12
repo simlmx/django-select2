@@ -511,6 +511,16 @@ class HeavySelect2MultipleWidget(HeavySelect2Mixin, MultipleSelect2HiddenInput):
             if texts:
                 return u"$('#%s').txt(%s);" % (id_, texts)
 
+    def render_texts(self, selected_choices, choices):
+        """ Gets the labels form the database. Keeps the order so it will work
+            for SortableHeavyIt.. also, even though it whould not be necessary.
+        """
+        selected_choices = list(force_unicode(v) for v in selected_choices)
+        values = self.field.queryset.filter(id__in = selected_choices)
+        id2order = {int(c):i for i,c in enumerate(selected_choices)}
+        values = sorted(values, key=lambda v: id2order[v.id])
+        return convert_to_js_string_arr(values)
+
 
 ### Auto Heavy widgets ###
 
@@ -561,18 +571,6 @@ class SortableSelect2WidgetMixin(object):
 
 #class SortableSelect2MultipleWidget(SortableSelect2WidgetMixin, Select2MultipleWidget):
 #    pass
-
-class HeavySelect2MultipleWidget(HeavySelect2MultipleWidget):
-    """Overwriting select2's widget."""
-    def render_texts(self, selected_choices, choices):
-        """ Gets the labels form the database. Keeps the order so it will work
-            for SortableHeavyIt.. also, even though it whould not be necessary.
-        """
-        selected_choices = list(force_unicode(v) for v in selected_choices)
-        values = self.field.queryset.filter(id__in = selected_choices)
-        id2order = {int(c):i for i,c in enumerate(selected_choices)}
-        values = sorted(values, key=lambda v: id2order[v.id])
-        return convert_to_js_string_arr(values)
 
 
 class SortableHeavySelect2Widget(SortableSelect2WidgetMixin, HeavySelect2MultipleWidget):
